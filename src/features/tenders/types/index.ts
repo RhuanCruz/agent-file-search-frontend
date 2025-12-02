@@ -1,8 +1,8 @@
 export interface PNCPTender {
     sequencialCompra: number;
-    anoContratacao: number;
+    anoCompra: number;
     dataPublicacaoPncp: string;
-    objeto: string;
+    objetoCompra: string;
     orgaoEntidade: {
         cnpj: string;
         razaoSocial: string;

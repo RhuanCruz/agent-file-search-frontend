@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Send, Bot, User, Loader2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import {
     Dialog,
     DialogContent,
@@ -25,7 +26,7 @@ export const ChatDialog = ({ tender, open, onOpenChange }: ChatDialogProps) => {
 
     // Only initialize hook if tender exists, otherwise use dummy data to prevent errors
     // In a real app, you might want to handle this differently
-    const { messages, sendMessage, isLoading, setMessages } = useTenderChat(tender!);
+    const { messages, sendMessage, isLoading, setMessages } = useTenderChat(tender);
 
     useEffect(() => {
         if (open && messages.length === 0) {
@@ -66,12 +67,12 @@ export const ChatDialog = ({ tender, open, onOpenChange }: ChatDialogProps) => {
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[500px] h-[600px] flex flex-col">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <Bot className="w-5 h-5 text-primary" />
-                        IA Assistente
+                    <DialogTitle className="flex items-center gap-2 text-lg">
+                        <Bot className="w-5 h-5 text-primary shrink-0" />
+                        Licitahub IA
                     </DialogTitle>
                     <DialogDescription className="line-clamp-1">
-                        {tender.objeto}
+                        {tender.objetoCompra}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -85,30 +86,34 @@ export const ChatDialog = ({ tender, open, onOpenChange }: ChatDialogProps) => {
                             >
                                 <div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted'
+                                        ? 'bg-primary text-white'
+                                        : 'bg-muted text-muted-foreground'
                                         }`}
                                 >
                                     {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
                                 </div>
                                 <div
                                     className={`rounded-lg p-3 max-w-[80%] text-sm ${msg.role === 'user'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted'
+                                        ? 'bg-zinc-200 '
+                                        : 'bg-muted text-muted-foreground'
                                         }`}
                                 >
-                                    {msg.content}
+                                    <div className="prose prose-sm dark:prose-invert max-w-none break-words">
+                                        <ReactMarkdown>
+                                            {msg.content}
+                                        </ReactMarkdown>
+                                    </div>
                                 </div>
                             </div>
                         ))}
                         {isLoading && (
-                            <div className="flex gap-3">
+                            <div className="flex gap-3 animate-pulse">
                                 <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
                                     <Bot size={16} />
                                 </div>
                                 <div className="bg-muted rounded-lg p-3 flex items-center gap-2 text-sm text-muted-foreground">
                                     <Loader2 className="w-4 h-4 animate-spin" />
-                                    Pensando...
+                                    Thinking...
                                 </div>
                             </div>
                         )}

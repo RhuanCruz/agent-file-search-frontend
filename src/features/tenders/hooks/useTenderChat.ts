@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import type { PNCPTender, ChatMessage, ChatPayload } from '../types';
 
-export const useTenderChat = (tender: PNCPTender) => {
+export const useTenderChat = (tender: PNCPTender | null) => {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // Reset conversation when tender changes
+    useEffect(() => {
+        if (!tender) return;
+        setMessages([]);
+        setError(null);
+        setIsLoading(false);
+    }, [tender?.sequencialCompra, tender?.orgaoEntidade.cnpj, tender?.anoCompra]);
+
     const sendMessage = async (text: string) => {
-        if (!text.trim()) return;
+        if (!text.trim() || !tender) return;
 
         const userMessage: ChatMessage = {
             id: Date.now().toString(),
@@ -24,10 +32,12 @@ export const useTenderChat = (tender: PNCPTender) => {
         try {
             const payload: ChatPayload = {
                 question: text,
-                cnpj: tender.orgaoEntidade.cnpj,
-                year: tender.anoContratacao.toString(),
-                sequential_id: tender.sequencialCompra.toString(),
+                cnpj: tender.orgaoEntidade?.cnpj || '',
+                year: tender.anoCompra?.toString() || '',
+                sequential_id: tender.sequencialCompra?.toString() || '',
             };
+
+            console.log('Sending Chat Payload:', payload);
 
             const response = await axios.post(
                 'https://agent-file-search-backend.onrender.com/chat/tender',
@@ -42,14 +52,15 @@ export const useTenderChat = (tender: PNCPTender) => {
             };
 
             setMessages((prev) => [...prev, assistantMessage]);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Chat Error:", err);
-            setError("Erro ao conectar com o assistente. Tente novamente.");
-            // Optional: Add error message to chat
+            const errorMessage = err.response?.data?.detail || "Erro ao conectar com o assistente. Tente novamente.";
+            setError(errorMessage);
+
             setMessages((prev) => [...prev, {
                 id: (Date.now() + 1).toString(),
                 role: 'system',
-                content: "Erro ao conectar com o assistente. O servidor pode estar iniciando (Cold Start). Tente novamente em alguns segundos.",
+                content: `Erro: ${errorMessage}`,
                 timestamp: new Date(),
             }]);
         } finally {

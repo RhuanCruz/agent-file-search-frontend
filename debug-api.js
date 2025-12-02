@@ -12,7 +12,7 @@ const fetchTenders = async () => {
             dataInicial: formatDate(startDate),
             dataFinal: formatDate(endDate),
             pagina: 1,
-            codigoModalidadeContratacao: 6, // Pregão - trying to fix 400 error
+            codigoModalidadeContratacao: 6,
         };
 
         console.log('Params:', params);
@@ -22,7 +22,13 @@ const fetchTenders = async () => {
         });
 
         console.log('Success:', response.status);
-        console.log('Data count:', response.data.data ? response.data.data.length : 0);
+        if (response.data.data && response.data.data.length > 0) {
+            console.log('First Tender Item Structure:');
+            console.log(JSON.stringify(response.data.data[0], null, 2));
+        } else {
+            console.log('No data found');
+        }
+
     } catch (error) {
         if (error.response) {
             console.error('Error Status:', error.response.status);

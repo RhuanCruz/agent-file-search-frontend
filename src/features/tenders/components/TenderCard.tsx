@@ -30,7 +30,7 @@ export const TenderCard = ({ tender, onChatClick }: TenderCardProps) => {
             </CardHeader>
             <CardContent className="flex-1">
                 <p className="text-sm text-foreground/90 line-clamp-3 leading-relaxed">
-                    {tender.objeto}
+                    {tender.objetoCompra}
                 </p>
             </CardContent>
             <CardFooter className="pt-2">
