@@ -49,7 +49,12 @@ export const useTenderChat = (tender: PNCPTender | null) => {
 
             const response = await axios.post(
                 'https://agent-file-search-backend.onrender.com/chat/tender',
-                payload
+                payload,
+                {
+                    headers: {
+                        'x-api-key': 'e4d7a51c9a5d2b9b3f38aa2b002b4aa1f8f3aaf263e730df5bcb8f8e7e4e3d5a'
+                    }
+                }
             );
 
             const assistantMessage: ChatMessage = {
