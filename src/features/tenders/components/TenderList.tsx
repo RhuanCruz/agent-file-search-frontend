@@ -34,7 +34,6 @@ export const TenderList = () => {
                 params
             });
 
-            console.log('PNCP API Response:', response.data);
 
             setTenders(response.data.data || []);
         } catch (error) {
