@@ -26,4 +26,5 @@ export interface ChatPayload {
     cnpj: string;
     year: string;
     sequential_id: string;
+    user_id: string;
 }

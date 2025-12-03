@@ -30,11 +30,19 @@ export const useTenderChat = (tender: PNCPTender | null) => {
         setError(null);
 
         try {
+            // Get or create user_id
+            let userId = localStorage.getItem('chat_user_id');
+            if (!userId) {
+                userId = crypto.randomUUID();
+                localStorage.setItem('chat_user_id', userId);
+            }
+
             const payload: ChatPayload = {
                 question: text,
                 cnpj: tender.orgaoEntidade?.cnpj || '',
                 year: tender.anoCompra?.toString() || '',
                 sequential_id: tender.sequencialCompra?.toString() || '',
+                user_id: userId,
             };
 
             console.log('Sending Chat Payload:', payload);
