@@ -14,7 +14,8 @@ export const checkTenderFiles = async (
     ano: number,
     sequencial: number
 ): Promise<boolean> => {
-    const baseUrl = `https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/compras/${ano}/${sequencial}/arquivos`;
+    // Use relative path to go through Vite proxy
+    const baseUrl = `/pncp-api/v1/orgaos/${cnpj}/compras/${ano}/${sequencial}/arquivos`;
 
     // Try IDs 1, 2, and 3
     for (let id = 1; id <= 10; id++) {

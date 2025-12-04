@@ -10,4 +10,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    proxy: {
+      '/pncp-api': {
+        target: 'https://pncp.gov.br',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  }
 })
